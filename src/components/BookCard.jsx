@@ -6,7 +6,7 @@ export default function BookCard({ id, title, author, available, onReserve }) {
         <p>{author}</p>
       </div>
       <button type="button" onClick={() => onReserve(id)}>
-        Reservar
+        {available ? "Reservar" : "Devolver"}
       </button>
       <span className={`badge ${available ? "badge-ok" : "badge-off"}`}>
         {available ? "Disponível" : "Reservado"}
