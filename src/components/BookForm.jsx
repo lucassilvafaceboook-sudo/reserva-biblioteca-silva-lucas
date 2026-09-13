@@ -1,7 +1,8 @@
 import { useState } from "react";
 
 export default function BookForm({ onAddBook }) {
-  const [form, setForm] = useState({ title: "", author: "" });
+  // DESAFIO 3: Adicionado o campo 'year' no estado inicial
+  const [form, setForm] = useState({ title: "", author: "", year: "" });
   const [error, setError] = useState("");
 
   function handleChange(event) {
@@ -17,10 +18,11 @@ export default function BookForm({ onAddBook }) {
 
     const title = form.title.trim();
     const author = form.author.trim();
+    const year = form.year.trim(); // Limpando espaços do ano
 
-
-    if (!title || !author) {
-      setError("Preencha o título e o autor.");
+    // Validação atualizada para exigir o ano
+    if (!title || !author || !year) {
+      setError("Preencha o título, o autor e o ano.");
       return;
     }
 
@@ -28,17 +30,25 @@ export default function BookForm({ onAddBook }) {
       id: crypto.randomUUID(),
       title,
       author,
+      year: Number(year), // DESAFIO 3: Convertendo para número
       available: true,
     });
 
-    setForm({ title: "", author: "" });
+    // Resetando o formulário completo
+    setForm({ title: "", author: "", year: "" });
     setError("");
   }
 
   return (
     <form className="book-form" onSubmit={handleSubmit}>
       <div className="field">
-        <label htmlFor="title">Título</label>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <label htmlFor="title">Título</label>
+          {/* DESAFIO 2: Contagem dinâmica de caracteres */}
+          <span style={{ fontSize: '12px', color: '#55617a' }}>
+            {form.title.length} caracteres
+          </span>
+        </div>
         <input
           id="title"
           name="title"
@@ -46,6 +56,7 @@ export default function BookForm({ onAddBook }) {
           onChange={handleChange}
         />
       </div>
+
       <div className="field">
         <label htmlFor="author">Autor</label>
         <input
@@ -55,6 +66,19 @@ export default function BookForm({ onAddBook }) {
           onChange={handleChange}
         />
       </div>
+
+      {/* DESAFIO 3: Novo campo para capturar o ano */}
+      <div className="field">
+        <label htmlFor="year">Ano de publicação</label>
+        <input
+          id="year"
+          name="year"
+          type="number"
+          value={form.year}
+          onChange={handleChange}
+        />
+      </div>
+
       {error && <p className="form-error">{error}</p>}
       <button type="submit">Cadastrar livro</button>
     </form>
