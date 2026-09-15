@@ -1,21 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { books as initialBooks } from "./data/books";
 import BookList from "./components/BookList";
 import BookForm from "./components/BookForm";
 import Panel from "./components/Panel";
 
+const STORAGE_KEY = "reserva-biblioteca:books";
+
+function loadBooks() {
+  const savedBooks = localStorage.getItem(STORAGE_KEY);
+  if (!savedBooks) return initialBooks;
+  try {
+    const parsedBooks = JSON.parse(savedBooks);
+    return Array.isArray(parsedBooks) ? parsedBooks : initialBooks;
+  } catch {
+    return initialBooks;
+  }
+}
+
 export default function App() {
-  const [books, setBooks] = useState(initialBooks);
-  // DESAFIO 1: Novo estado para controlar o filtro
+  const [books, setBooks] = useState(loadBooks);
   const [showAvailable, setShowAvailable] = useState(false);
 
   const availableCount = books.filter((book) => book.available).length;
 
-  // DESAFIO 1: Lista derivada. Se o filtro estiver ativo, mostra só os disponíveis.
   const displayedBooks = showAvailable
     ? books.filter((book) => book.available)
     : books;
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(books));
+  }, [books]);
+
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = `${availableCount}/${books.length} livros disponíveis`;
+
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [availableCount, books.length]);
 
   function handleReserve(bookId) {
     setBooks((currentBooks) =>
@@ -47,7 +71,6 @@ export default function App() {
       </Panel>
 
       <Panel title="Acervo">
-        {/* DESAFIO 1: Checkbox do filtro */}
         <div style={{ marginBottom: "16px" }}>
           <label style={{ cursor: "pointer", fontWeight: "600", fontSize: "14px" }}>
             <input
@@ -60,7 +83,6 @@ export default function App() {
           </label>
         </div>
         
-        {/* Passando a lista filtrada (displayedBooks) em vez da lista completa (books) */}
         <BookList books={displayedBooks} onReserve={handleReserve} />
       </Panel>
     </main>
