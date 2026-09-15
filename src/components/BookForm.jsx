@@ -1,14 +1,11 @@
 import { useContext, useState } from "react";
 import { BooksContext } from "../context/BooksContext";
+import { useNavigate } from "react-router";
 
 export default function BookForm() {
-  const booksContext = useContext(BooksContext);
+  const { handleAddBook } = useContext(BooksContext);
+  const navigate = useNavigate(); 
   
-  if (!booksContext) {
-    throw new Error("BookForm precisa estar dentro de BooksProvider.");
-  }
-
-  const { handleAddBook } = booksContext;
   const [form, setForm] = useState({ title: "", author: "", year: "" });
   const [error, setError] = useState("");
 
@@ -42,6 +39,9 @@ export default function BookForm() {
 
     setForm({ title: "", author: "", year: "" });
     setError("");
+    
+    // Redirecionamento programático para a rota raiz após o cadastro
+    navigate("/"); 
   }
 
   return (
