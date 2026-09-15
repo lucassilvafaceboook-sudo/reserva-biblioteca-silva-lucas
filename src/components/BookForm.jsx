@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { BooksContext } from "../context/BooksContext";
 
-export default function BookForm({ onAddBook }) {
-  // DESAFIO 3: Adicionado o campo 'year' no estado inicial
+export default function BookForm() {
+  const booksContext = useContext(BooksContext);
+  
+  if (!booksContext) {
+    throw new Error("BookForm precisa estar dentro de BooksProvider.");
+  }
+
+  const { handleAddBook } = booksContext;
   const [form, setForm] = useState({ title: "", author: "", year: "" });
   const [error, setError] = useState("");
 
@@ -14,27 +21,25 @@ export default function BookForm({ onAddBook }) {
   }
 
   function handleSubmit(event) {
-    event.preventDefault(); // Impede o recarregamento da página
+    event.preventDefault();
 
     const title = form.title.trim();
     const author = form.author.trim();
-    const year = form.year.trim(); // Limpando espaços do ano
+    const year = form.year.trim();
 
-    // Validação atualizada para exigir o ano
     if (!title || !author || !year) {
       setError("Preencha o título, o autor e o ano.");
       return;
     }
 
-    onAddBook({
+    handleAddBook({
       id: crypto.randomUUID(),
       title,
       author,
-      year: Number(year), // DESAFIO 3: Convertendo para número
+      year: Number(year),
       available: true,
     });
 
-    // Resetando o formulário completo
     setForm({ title: "", author: "", year: "" });
     setError("");
   }
@@ -44,7 +49,6 @@ export default function BookForm({ onAddBook }) {
       <div className="field">
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <label htmlFor="title">Título</label>
-          {/* DESAFIO 2: Contagem dinâmica de caracteres */}
           <span style={{ fontSize: '12px', color: '#55617a' }}>
             {form.title.length} caracteres
           </span>
@@ -67,7 +71,6 @@ export default function BookForm({ onAddBook }) {
         />
       </div>
 
-      {/* DESAFIO 3: Novo campo para capturar o ano */}
       <div className="field">
         <label htmlFor="year">Ano de publicação</label>
         <input

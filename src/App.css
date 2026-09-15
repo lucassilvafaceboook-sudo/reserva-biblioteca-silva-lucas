@@ -153,3 +153,37 @@ button:hover {
   color: var(--vermelho);
   font-weight: 700;
 }
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 4%;
+  border-bottom: 1px solid var(--cinza-borda);
+  background: #ffffff;
+}
+
+.app-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.app-header a {
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #55617a;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.app-header a.active {
+  background: var(--azul);
+  color: #ffffff;
+}
